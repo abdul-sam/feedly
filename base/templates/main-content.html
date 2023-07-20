@@ -1,0 +1,15 @@
+<div class="col py-3">
+  <nav class="navbar navbar-light">
+    <div class="container-fluid">
+      <form class="d-flex" method="GET" action="{% url 'home' %}">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      </form>
+      <div class="d-felx">
+        <button class="me-2 btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#categoryModal">Create Category</button>
+        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#feedModal">Create Feed</button>
+      </div>
+    </div>
+  </nav>
+  {% include 'category_form.html' %}
+  {% include 'feed_form.html' %}
+</div>
