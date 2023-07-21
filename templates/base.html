@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 
+{% load static %}
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
     {% load django_bootstrap5 %}
 
     {% bootstrap_css %}
@@ -14,18 +18,21 @@
 
     {% bootstrap_messages %}
     <title>Feedly Clone</title>
+
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
   </head>
 
   <body>
     <div class="container-fluid">
-      <div class="row flex-nowrap">
-
-      {% include 'sidebar.html' %}
-
-
-      {% block content %}
-      
-      {% endblock %}
+      <div class="row flex-nowrap" id="main-container">
+        <div id="sidebar">
+          {% include 'sidebar.html' %}
+        </div>
+        <div id="content">
+          {% block content %}
+          
+          {% endblock %}
+        </div>
     </div>
   </div>
 

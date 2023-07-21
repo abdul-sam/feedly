@@ -1,0 +1,30 @@
+{% for f in feeds %}
+  <div class="col-lg-4 mb-4">
+    <div class="card border-none">
+      {% if f.image is not None %}
+        <img
+          src="{{feed.image.url}}"
+          alt=""
+          class="card-img-top"
+        />
+      {% else %}
+        {% for key, value in images.items %}
+          {% if key == f.link %}
+            <img
+              src="{{value}}"
+              alt=""
+              class="card-img-top"
+            />
+            {{ break }}
+          {% endif %}
+        {% endfor%}
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{f.title}}</h5>
+        <p class="card-text">
+          {{f.description}}
+        </p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
