@@ -9,7 +9,7 @@
         />
       {% else %}
         {% for key, value in images.items %}
-          {% if key == f.link %}
+          {% if key == f.link and value != '' %}
             <img
               src="{{value}}"
               alt=""

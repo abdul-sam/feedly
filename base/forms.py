@@ -1,5 +1,12 @@
 from django.forms import ModelForm
-from .models import Category, Feed
+from .models import Board, Category, Feed
+
+
+class BoardForm(ModelForm):
+  class Meta:
+    model = Board
+    fields = '__all__'
+
 
 class CategoryForm(ModelForm):
   class Meta:
