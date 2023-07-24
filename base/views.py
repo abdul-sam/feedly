@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.db.models import Sum
 from .models import Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm
 import feedparser
+
+from .helpers import CategoryFeed, ImageParser
 
 def home(request):
   # feed = feedparser.parse('https://feeds.arstechnica.com/arstechnica/technology-lab')
@@ -14,10 +16,13 @@ def home(request):
   category_form = CategoryForm()
   feed_form = FeedForm()
   board_form = BoardForm()
+  total_feeds = CategoryFeed.total_feed_count
+  boards = Board.objects.all()
 
   categories = Category.objects.all()
   context = { 'categories': categories, 'category_form': category_form, 
-             'feed_form': feed_form, 'board_form': board_form }
+             'feed_form': feed_form, 'board_form': board_form, 
+             'total_feeds': total_feeds, 'boards': boards }
   return render(request, 'home.html', context)
 
 
@@ -59,6 +64,8 @@ def newFeed(request):
       feed_url = feed_url,
       category = category
     )
+
+    CategoryFeed.feedCount(category)
     return redirect('home')
   
   context = { 'form': form }
@@ -70,6 +77,8 @@ def singleFeed(request, pk):
   category_form = CategoryForm()
   feed_form = FeedForm()
   board_form = BoardForm()
+  total_feeds = CategoryFeed.total_feed_count
+  boards = Board.objects.all()
 
   categories = Category.objects.all()
   if feed is not None:
@@ -78,15 +87,15 @@ def singleFeed(request, pk):
     feeds = parsed_feed.entries
     images = {}
     for f in feeds:
-      src = f.content[0].value.split("src=")
-      if len(src) > 1:
-        src = src[1].split(" />\n")[0]
+      src = ImageParser.parseImage(f)
+      if src != '':
         images[f.link] = src[1:-1]
 
     context = { 'title': feed.title, 'parsed_feed': parsed_feed, 
                'categories': categories, 'category_form': category_form, 
-               'feed_form': feed_form, 'board_form': board_form, 'feed_count': feed_count, 
-               'feeds': feeds, 'images': images}
+               'feed_form': feed_form, 'board_form': board_form, 
+               'feed_count': feed_count, 'feeds': feeds, 'images': images, 
+               'total_feeds': total_feeds, 'boards': boards}
     return render(request, 'feed.html', context)
   
   context = {'categories': categories, 'category_form': category_form, 'feed_form': feed_form}
@@ -98,6 +107,8 @@ def singleCategory(request, pk):
   category_form = CategoryForm()
   feed_form = FeedForm()
   board_form = BoardForm()
+  total_feeds = CategoryFeed.total_feed_count
+  boards = Board.objects.all()
 
   categories = Category.objects.all()
   if category is not None:
@@ -106,9 +117,8 @@ def singleCategory(request, pk):
     for f in category.feeds.all():
       parsed_feed = feedparser.parse(f.feed_url)
       for feed in parsed_feed.entries:
-        src = feed.content[0].value.split("src=")
-        if len(src) > 1:
-          src = src[1].split(" />\n")[0]
+        src = ImageParser.parseImage(feed)
+        if src != '':
           images[feed.link] = src[1:-1]
 
         feeds.append(feed)
@@ -116,8 +126,9 @@ def singleCategory(request, pk):
     feed_count = len(feeds)
 
     context = { 'title': category.name, 'categories': categories, 
-               'category_form': category_form, 'feed_form': feed_form, 'board_form': board_form,
-               'feed_count': feed_count, 'feeds': feeds, 'images': images}
+               'category_form': category_form, 'feed_form': feed_form, 
+               'board_form': board_form, 'feed_count': feed_count, 'feeds': feeds, 
+               'images': images, 'total_feeds': total_feeds, 'boards': boards}
     return render(request, 'category.html', context)
   
   context = {'categories': categories, 'category_form': category_form, 'feed_form': feed_form}
@@ -131,7 +142,7 @@ def newBoard(request):
     if form.is_valid():
       title = request.POST.get('title')
       description = request.POST.get('description')
-      public = request.POST.get('public')
+      public = request.POST.get('public') if request.POST.get('public') is not None else False
       Board.objects.create(
         title = title,
         description = description,

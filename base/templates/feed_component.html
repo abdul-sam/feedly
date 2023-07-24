@@ -1,3 +1,4 @@
+{% load description_parser %}
 {% for f in feeds %}
   <div class="col-lg-4 mb-4">
     <div class="card border-none">
@@ -22,7 +23,7 @@
       <div class="card-body">
         <h5 class="card-title">{{f.title}}</h5>
         <p class="card-text">
-          {{f.description}}
+          {{f.description|parse_description}}
         </p>
       </div>
     </div>
