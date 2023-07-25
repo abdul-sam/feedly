@@ -3,22 +3,16 @@ from .models import Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
 import feedparser
 
-from .helpers import CategoryFeed, ImageParser
+from .helpers import CategoryFeed, ImageParser, ViewContext
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='login')
 def home(request):
-  category_form = CategoryForm()
-  feed_form = FeedForm()
-  board_form = BoardForm()
-  total_feeds = CategoryFeed.total_feed_count
-  boards = Board.objects.all()
-
-  categories = Category.objects.all()
-  context = { 'categories': categories, 'category_form': category_form, 
-             'feed_form': feed_form, 'board_form': board_form, 
-             'total_feeds': total_feeds, 'boards': boards }
+  context = ViewContext.contextView(request.user)
   return render(request, 'home.html', context)
 
 
@@ -63,6 +57,7 @@ def userLogout(request):
   return redirect('login')
 
 
+@login_required(login_url='login')
 def userProfile(request):
   user = request.user
   form = UserForm(instance=user)
@@ -77,6 +72,7 @@ def userProfile(request):
   return render(request, 'accounts/profile.html', context)
 
 
+@login_required(login_url='login')
 def newCategory(request):
   form = CategoryForm()
   if request.method == 'POST':
@@ -90,6 +86,7 @@ def newCategory(request):
   return render(request, 'home.html', context)
 
 
+@login_required(login_url='login')
 def newFeed(request):
   form = FeedForm()
   if request.method == 'POST':
@@ -123,15 +120,11 @@ def newFeed(request):
   return render(request, 'home.html', context)
 
 
+@login_required(login_url='login')
 def singleFeed(request, pk):
   feed = Feed.objects.get(pk=pk)
-  category_form = CategoryForm()
-  feed_form = FeedForm()
-  board_form = BoardForm()
-  total_feeds = CategoryFeed.total_feed_count
-  boards = Board.objects.all()
+  context = ViewContext.contextView(request.user)
 
-  categories = Category.objects.all()
   if feed is not None:
     parsed_feed = feedparser.parse(feed.feed_url)
     feed_count = len(parsed_feed.entries)
@@ -142,26 +135,20 @@ def singleFeed(request, pk):
       if src != '':
         images[f.link] = src[1:-1]
 
-    context = { 'title': feed.title, 'parsed_feed': parsed_feed, 
-               'categories': categories, 'category_form': category_form, 
-               'feed_form': feed_form, 'board_form': board_form, 
-               'feed_count': feed_count, 'feeds': feeds, 'images': images, 
-               'total_feeds': total_feeds, 'boards': boards}
+    feed_context = { 'title': feed.title, 'feed_count': feed_count, 
+                    'feeds': feeds, 'images': images}
+    
+    context.update(feed_context)
     return render(request, 'feed.html', context)
   
-  context = {'categories': categories, 'category_form': category_form, 'feed_form': feed_form}
   return render(request, 'home.html', context)
 
 
+@login_required(login_url='login')
 def singleCategory(request, pk):
   category = Category.objects.get(pk=pk)
-  category_form = CategoryForm()
-  feed_form = FeedForm()
-  board_form = BoardForm()
-  total_feeds = CategoryFeed.total_feed_count
-  boards = Board.objects.all()
+  context = ViewContext.contextView(request.user)
 
-  categories = Category.objects.all()
   if category is not None:
     feeds = []
     images = {}
@@ -176,16 +163,15 @@ def singleCategory(request, pk):
       
     feed_count = len(feeds)
 
-    context = { 'title': category.name, 'categories': categories, 
-               'category_form': category_form, 'feed_form': feed_form, 
-               'board_form': board_form, 'feed_count': feed_count, 'feeds': feeds, 
-               'images': images, 'total_feeds': total_feeds, 'boards': boards}
+    feed_context = { 'title': category.name, 'feed_count': feed_count, 'feeds': feeds, 
+               'images': images}
+    context.update(feed_context)
     return render(request, 'category.html', context)
   
-  context = {'categories': categories, 'category_form': category_form, 'feed_form': feed_form}
   return render(request, 'home.html', context)
 
 
+@login_required(login_url='login')
 def newBoard(request):
   form = BoardForm()
   if request.method == 'POST':

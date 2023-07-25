@@ -51,4 +51,5 @@ class ViewContext:
              'categories': categories, 'total_feeds': total_feeds}
     
     return context
+  
 
