@@ -1,6 +1,7 @@
 import feedparser
 from django.db.models import Sum
-from .models import Category
+from .models import Board, Category
+from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
 
 class CategoryFeed:
 
@@ -33,4 +34,21 @@ class ImageParser:
       src = src[1].split(" />\n")[0]
 
     return src
+  
+
+class ViewContext:
+
+  def contextView(user):
+    board_form = BoardForm()
+    category_form = CategoryForm()
+    feed_form = FeedForm()
+    boards = Board.objects.all()
+    categories = Category.objects.all()
+    total_feeds = CategoryFeed.total_feed_count
+
+    context = { 'board_form': board_form, 'category_form': category_form, 
+             'feed_form': feed_form, 'boards': boards, 
+             'categories': categories, 'total_feeds': total_feeds}
+    
+    return context
 

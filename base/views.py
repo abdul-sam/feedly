@@ -1,18 +1,14 @@
 from django.shortcuts import render, redirect
-from django.db.models import Sum
 from .models import Board, Category, Feed
-from .forms import BoardForm, CategoryForm, FeedForm
+from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
 import feedparser
 
 from .helpers import CategoryFeed, ImageParser
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
 def home(request):
-  # feed = feedparser.parse('https://feeds.arstechnica.com/arstechnica/technology-lab')
-  # items = feed.entries
-  # titles = []
-  # for item in items:
-  #     titles.append(item.title)
-  # return HttpResponse(len(titles))
   category_form = CategoryForm()
   feed_form = FeedForm()
   board_form = BoardForm()
@@ -24,6 +20,61 @@ def home(request):
              'feed_form': feed_form, 'board_form': board_form, 
              'total_feeds': total_feeds, 'boards': boards }
   return render(request, 'home.html', context)
+
+
+def userLogin(request):
+  if request.user.is_authenticated:
+    return redirect('home')
+  
+  if request.method == 'POST':
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    user = authenticate(username=username, password=password)
+    if user is not None:
+      login(request, user)
+      return redirect('home')
+    else:
+      messages.error(request, 'Invalid Credentials')
+
+  context = {}
+  return render(request, 'accounts/login.html', context)
+
+
+def userSignup(request):
+  form = SignUpForm()
+  if request.method == 'POST':
+    form = SignUpForm(request.POST)
+    if form.is_valid():
+      user = form.save(commit=False)
+      user.username = user.username.lower()
+      user.save()
+      login(request, user)
+      return redirect('home')
+    else:
+      messages.error(request, 'An error was occurred during signup')
+      
+  context = { 'form': form }
+  return render(request, 'accounts/signup.html', context)
+
+
+def userLogout(request):
+  logout(request)
+  return redirect('login')
+
+
+def userProfile(request):
+  user = request.user
+  form = UserForm(instance=user)
+
+  if request.method == 'POST':
+    form = UserForm(request.POST, instance=user)
+    if form.is_valid():
+      form.save()
+      return redirect('profile')
+  
+  context = {'form': form}
+  return render(request, 'accounts/profile.html', context)
 
 
 def newCategory(request):

@@ -3,6 +3,13 @@ from . import views
 
 urlpatterns = [
   path('', views.home, name='home'),
+
+  re_path(r'^login/$', views.userLogin, name='login'),
+  re_path(r'^signup/$', views.userSignup, name='signup'),
+  re_path(r'^logout/$', views.userLogout, name='logout'),
+  re_path(r'^profile/$', views.userProfile, name="profile"),
+
+
   re_path(r'^categories/new/$', views.newCategory, name='new_category'),
   re_path(r'^categories/(?P<pk>\d+)/$', views.singleCategory, name='category'),
   re_path(r'^feeds/new/$', views.newFeed, name='new_feed'),
