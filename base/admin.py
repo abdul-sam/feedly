@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Board, Category, Feed
+from .models import Article, Board, Category, Feed
+
+
+class ArticleAdmin(admin.ModelAdmin):
+  list_display = ('title', 'description', 'image_url', 'link', 'read', 'read_later', 'recently_read', 'feed', 'board', 'updated_at', 'created_at')
 
 
 class BoardAdmin(admin.ModelAdmin):
@@ -11,9 +15,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class FeedAdmin(admin.ModelAdmin):
-  list_display = ('title', 'description', 'image_url', 'feed_url', 'category', 'updated_at', 'created_at')
+  list_display = ('title', 'description', 'image_url', 'feed_url', 'category', 'article_count', 'updated_at', 'created_at')
 
 
+admin.site.register(Article, ArticleAdmin)
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Feed, FeedAdmin)

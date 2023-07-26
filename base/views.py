@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Board, Category, Feed
+from .models import Article, Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
-import feedparser
 
-from .helpers import CategoryFeed, ImageParser, ViewContext
+from .helpers import CategoryFeed, FeedArticle, ViewContext
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -79,7 +78,10 @@ def newCategory(request):
     form = CategoryForm(request.POST)
     if form.is_valid():
       name = request.POST.get('name')
-      Category.objects.create(name=name)
+      Category.objects.create(
+        name = name,
+        user = request.user
+      )
       return redirect('home')
   
   context = { 'form': form }
@@ -90,30 +92,16 @@ def newCategory(request):
 def newFeed(request):
   form = FeedForm()
   if request.method == 'POST':
-    title, description, image_url = '', '', ''
+    user = request.user
     category_name = request.POST.get('category')
-    category, created = Category.objects.get_or_create(name=category_name)
+    category, created = user.categories.get_or_create(name=category_name)
     feed_url = request.POST.get('feed_url')
     feed = feedparser.parse(feed_url)
-    if len(feed.entries) > 0:
-      if feed.channel is not None:
-        title = feed.channel.title
-        if hasattr(feed.channel, 'description'):
-          description = feed.channel.description
-        if hasattr(feed.channel, 'image'):
-          image_url = feed.channel.image.url
-        elif hasattr(feed.channel, 'icon'):
-          image_url = feed.channel.icon
-
-    Feed.objects.create(
-      title = title,
-      description = description,
-      image_url = image_url,
-      feed_url = feed_url,
-      category = category
-    )
-
+    db_feed = FeedArticle.addFeed(feed, feed_url, category, user)
     CategoryFeed.feedCount(category)
+    for article in feed.entries:
+      FeedArticle.addArticle(article, db_feed, user)
+      
     return redirect('home')
   
   context = { 'form': form }
@@ -122,21 +110,16 @@ def newFeed(request):
 
 @login_required(login_url='login')
 def singleFeed(request, pk):
-  feed = Feed.objects.get(pk=pk)
-  context = ViewContext.contextView(request.user)
+  user = request.user
+  feed = user.feeds.get(pk=pk)
+  context = ViewContext.contextView(user)
 
   if feed is not None:
-    parsed_feed = feedparser.parse(feed.feed_url)
-    feed_count = len(parsed_feed.entries)
-    feeds = parsed_feed.entries
-    images = {}
-    for f in feeds:
-      src = ImageParser.parseImage(f)
-      if src != '':
-        images[f.link] = src[1:-1]
+    feed_count = feed.articles.count()
+    articles = feed.articles.all()
 
     feed_context = { 'title': feed.title, 'feed_count': feed_count, 
-                    'feeds': feeds, 'images': images}
+                    'articles': articles}
     
     context.update(feed_context)
     return render(request, 'feed.html', context)
@@ -146,25 +129,16 @@ def singleFeed(request, pk):
 
 @login_required(login_url='login')
 def singleCategory(request, pk):
-  category = Category.objects.get(pk=pk)
-  context = ViewContext.contextView(request.user)
+  user = request.user
+  category = user.categories.get(pk=pk)
+  context = ViewContext.contextView(user)
 
   if category is not None:
-    feeds = []
-    images = {}
-    for f in category.feeds.all():
-      parsed_feed = feedparser.parse(f.feed_url)
-      for feed in parsed_feed.entries:
-        src = ImageParser.parseImage(feed)
-        if src != '':
-          images[feed.link] = src[1:-1]
+    feed_ids = [f.id for f in category.feeds.all()]
+    articles = Article.objects.filter(feed__in=feed_ids).distinct()
+    feed_count = articles.count()
 
-        feeds.append(feed)
-      
-    feed_count = len(feeds)
-
-    feed_context = { 'title': category.name, 'feed_count': feed_count, 'feeds': feeds, 
-               'images': images}
+    feed_context = { 'title': category.name, 'feed_count': feed_count, 'articles': articles }
     context.update(feed_context)
     return render(request, 'category.html', context)
   
@@ -183,9 +157,36 @@ def newBoard(request):
       Board.objects.create(
         title = title,
         description = description,
-        public = public
+        public = public,
+        user = request.user
       )
       return redirect('home')
   
   context = { 'form': form }
   return render(request, 'home.html', context)
+
+
+@login_required(login_url='login')
+def categoryList(request):
+  user = request.user
+  context = ViewContext.contextView(user)
+
+  category_ids = [c.id for c in user.categories.all()]
+  feed_ids = [f.id for f in Feed.objects.filter(category__in=category_ids)]
+  articles = Article.objects.filter(feed__in=feed_ids).distinct()
+  feed_count = articles.count()
+
+  feed_context = { 'title': 'All Personal Feeds', 'feed_count': feed_count, 'articles': articles }
+  context.update(feed_context)
+  return render(request, 'category_list.html', context)
+
+
+@login_required(login_url='login')
+def article(request, category_pk, feed_pk, pk):
+  user = request.user
+  context = ViewContext.contextView(user)
+  article = user.articles.get(pk=pk)
+
+  article_context = {'article': article}
+  context.update(article_context)
+  return render(request, 'article.html', context)

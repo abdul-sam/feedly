@@ -29,6 +29,7 @@ class BoardForm(ModelForm):
   class Meta:
     model = Board
     fields = '__all__'
+    exclude = ['public', 'user']
 
 
 class CategoryForm(ModelForm):
@@ -41,7 +42,7 @@ class CategoryForm(ModelForm):
   class Meta:
     model = Category
     fields = '__all__'
-    exclude = ['total_feed_count']
+    exclude = ['total_feed_count', 'user']
 
 
 class FeedForm(ModelForm):

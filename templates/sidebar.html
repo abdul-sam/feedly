@@ -7,70 +7,63 @@
     </div>
 
 
-    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 p-4 mt-4" id="top-menu">
+    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 pb-4 mt-4" id="top-menu">
       <li class="nav-item">
         <a href="/" class="nav-link align-middle text-body fw-bold px-0">
-          <i class="fa fa-house px-2"></i> 
-          <span class="ms-1 d-none d-sm-inline">Today</span>
+          <i class="fa fa-house"></i> 
+          <span class="ms-3 d-none d-sm-inline">Today</span>
         </a>
       </li>
       <li class="nav-item">
         <a href="/" class="nav-link align-middle p-2 text-body fw-bold px-0">
-          <i class="fa-regular fa-bookmark px-2"></i></i> <span class="ms-1 d-none d-sm-inline">Read Later</span>
+          <i class="fa-regular fa-bookmark"></i> <span class="ms-3 d-none d-sm-inline">Read Later</span>
         </a>
       </li>
     </ul>
-    <span class="px-3 pt-3 feed-heading">FEEDS</span>
-    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 p-4 pt-2 text-dark" id="menu">
-      <li class="nav-item">
-        <a href="/" class="nav-link px-0 align-middle main-link text-body fw-bold">
-          <span class="list-title">
-            <span class="text-dark p-1 px-2 submenu">
-              <i class="fa-solid fa-bars"></i>
-            </span>
-            <span class="feed--counter">
-              <span class="ms-1 d-none d-sm-inline">All</span>
-              <span class="mt-1 fs-12">
-                <span class="p-1 px-2 text-body bg-light-gray">
-                  {{total_feeds}}
-                </span>
-              </span>
-            </span>
+    <span class="pb-3 pt-3 feed-heading">FEEDS</span>
+    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 pb-2 pt-2 text-dark" id="menu">
+      <li class="nav-item w-100">
+        <a href="{% url 'categories' %}" class="nav-link px-0 align-middle main-link text-body">
+          <i class="fa-solid fa-bars fs-16"></i>
+          <span class="ms-3 d-none d-sm-inline fw-bold fw-bold">All</span>
+          <span class="text-muted float-end fs-10 p-1">
+            {{total_feeds}}
           </span>
         </a>
       </li>
       {% for category in categories %}
-        <li class="w-100">
-          <span class="list-title">
+        <li class="nav-item w-100">
+
+         <span class="">
             {% if category.feeds.count > 0 %}
-              <span href="#submenu{{category.pk}}" data-bs-toggle="collapse" class="text-dark p-1 px-2 submenu">
+              <span href="#submenu{{category.pk}}" data-bs-toggle="collapse" class="text-dark float-start submenu mt-2">
                 <i class="fa fa-chevron-down"></i>
               </span>
             {% endif %}
-           
-            <span class="feed--counter">
-              <a href="{% url 'category' category.pk %}" class="nav-link px-0 align-middle main-link text-body fw-bold">
-                <span class="ms-1 d-none d-sm-inline">{{category.name}}</span>
-              </a>
-              <span class="mt-1 fs-12">
-                <span class="p-1 px-2 text-body bg-light-gray">
-                  {{category.total_feed_count}}
-                </span>
+            <a href="{% url 'category' category.pk %}" class="nav-link px-0 align-middle main-link text-body">
+              <span class="ms-3 d-none d-sm-inline fw-bold">{{category.name}}</span>
+              <span class="text-muted float-end fs-10 p-1">
+                {{category.total_feed_count}}
               </span>
-            </span>
-          </span>
+            </a>
+         </span>
+
           {% if category.feeds.count > 0 %}
             <ul class="collapse nav flex-column ms-1" id="submenu{{category.pk}}" data-bs-parent="#menu">
               {% for feed in category.feeds.all %}
                 <li class="w-100">
-                  <a href="{% url 'feed' feed.pk %}" class="nav-link px-0 text-body">
-                    {% if feed.image_url != '' %}
-                      <img src="{{feed.image_url}}" alt="{{feed.title}}" class="feed-img me-2">
-                    {% else %}
-                      <img src="{% static 'images/no-image.png' %}" alt="{{feed.title}}" class="feed-img me-2">
-                    {% endif %}
-                    <span class="d-none d-sm-inline fw-normal fs-12">{{feed.title}}</span>
-                    <span>1</span> 
+                  <a href="{% url 'feed' feed.pk %}" class="nav-link px-0 align-middle main-link text-body fs-12">
+                    <span class="text-dark p-1">
+                      {% if feed.image_url != '' %}
+                        <img src="{{feed.image_url}}" alt="{{feed.title}}" class="feed-img me-1">
+                      {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="{{feed.title}}" class="feed-img me-1">
+                      {% endif %}
+                    </span>
+                    <span class="d-none d-sm-inline">{{feed.title}}</span>
+                    <span class="text-muted float-end fs-10 p-1">
+                      {{feed.article_count}}
+                    </span>
                   </a>
                 </li>
               {% endfor %}
@@ -78,31 +71,31 @@
           {% endif %}
         </li>
       {% endfor %}
-      <li>
-        <a href="#" class="nav-link align-middle text-body px-2 mt-3 py-1">
+      <li class="w-100">
+        <a href="#" class="nav-link align-middle text-body px-4 mt-3 py-1">
           <span class="ms-1 d-none d-sm-inline" data-bs-toggle="modal" data-bs-target="#categoryModal">Create Category</span>
         </a>
       </li>
     </ul>
-    <span class="px-3 pt-3 feed-heading">BOARDS</span>
-    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 p-4" id="top-menu">
+    <span class="pb-3 pt-3 feed-heading">BOARDS</span>
+    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100" id="top-menu">
       {% for board in boards %}
-        <li class="nav-item">
-          <a href="/" class="nav-link align-middle text-body fw-bold px-0">
+        <li class="nav-item w-100">
+          <a href="{% url 'categories' %}" class="nav-link px-0 align-middle main-link text-body">
             <i class="fa-regular fa-star"></i>
-            <span class="ms-1 d-none d-sm-inline">{{ board.title }}</span>
+            <span class="ms-3 d-none d-sm-inline fw-bold fw-bold">{{ board.title }}</span>
           </a>
         </li>
       {% endfor %}
 
       <li>
-        <a href="#" class="nav-link align-middle text-body px-2 mt-3 py-1">
+        <a href="#" class="nav-link align-middle text-body px-4 mt-3 py-1">
           <span class="ms-1 d-none d-sm-inline" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board</span>
         </a>
       </li>
     </ul>
 
-    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100 p-4 pt-2" id="top-menu">
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100 py-4" id="top-menu">
       <li class="nav-item">
         <a href="/" class="nav-link align-middle text-body fw-bold px-0">
           <i class="fa-regular fa-clock"></i>

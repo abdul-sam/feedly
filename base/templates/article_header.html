@@ -1,0 +1,18 @@
+<div class="col-md-12 mb-5 mt-2">
+  <div class="row mt-2">
+    <div class="col-md-8">
+      <h2 class="mt-2 mb-0">{{ article.title }}</h2>
+      <a href="{% url 'feed' article.feed.pk %}" class="hover-underline text-decoration-none text-muted">
+        <small>{{ article.feed.title }}</small>
+      </a>
+    </div>
+    <div class="col-md-4 text-end feed-count-div mt-3">
+      <div class="col-md-12">
+        <span class="p-1 px-2"><i class="fa-regular fa-bookmark"></i></span>
+        <span class="p-1 px-2"><i class="fa-regular fa-star"></i></span>
+        <span class="p-1 px-2 feed_check"><i class="fa-solid fa-check"></i></span>
+        <span class="p-1 px-2"><i class="fa-solid fa-ellipsis"></i></span>
+      </div>
+    </div>
+  </div>
+</div>

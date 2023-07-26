@@ -11,12 +11,32 @@ body {
   text-decoration: none;
 }
 
+.hover-underline:hover{
+  text-decoration: underline !important;
+}
+
 .bb-1{
   border-bottom: 1px solid lightgray;
 }
 
 .bg-light-gray{
   background: lightgray !important;
+}
+
+.fs-12{
+  font-size: 12px !important;
+}
+
+.fs-16{
+  font-size: 16px !important;
+}
+
+.bg-gray{
+  background-color: lightgray !important;
+}
+
+.border-none{
+  border: none;
 }
 
 #sidebar{
@@ -74,18 +94,6 @@ body {
   width: 25px;
 }
 
-.fs-12{
-  font-size: 12px !important;
-}
-
-.bg-gray{
-  background-color: lightgray !important;
-}
-
-.border-none{
-  border: none;
-}
-
 .feed-count-div
 .feed_check{
   position: relative;
@@ -95,4 +103,15 @@ body {
   position: absolute;
   top: 10%;
   font-size: 10px;
+}
+
+.article-descrioption img,
+.article-descrioption figure img{
+  display: none;
+  margin-bottom: 30px;
+}
+
+.article-descrioption div,
+.article-descrioption p{
+  padding: 10px;
 }

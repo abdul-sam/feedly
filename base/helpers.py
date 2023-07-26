@@ -1,6 +1,6 @@
 import feedparser
 from django.db.models import Sum
-from .models import Board, Category
+from .models import Article, Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
 
 class CategoryFeed:
@@ -14,9 +14,60 @@ class CategoryFeed:
     category.total_feed_count = feed_count
     category.save()
 
-  def total_feed_count():
-    return Category.objects.aggregate(Sum('total_feed_count'))['total_feed_count__sum']
-  
+  def total_feed_count(user):
+    feed_count = user.categories.aggregate(Sum('total_feed_count'))['total_feed_count__sum']
+    total_feed_count = feed_count if feed_count is not None else 0
+    return total_feed_count
+
+
+class FeedArticle:
+
+  def addArticle(article, feed, user):
+    title = article.title
+    description = ''
+    if hasattr(article, 'description'):
+      description = article.description
+    elif hasattr(article, 'content'):
+      description = article.content
+
+    src = ImageParser.parseImage(article)
+    src = src if src != '' else ''
+
+    Article.objects.create(
+      title = title,
+      description = description,
+      image_url = src,
+      link = article.link,
+      feed = feed,
+      user = user
+    )
+
+  def addFeed(parsed_feed, feed_url, category, user):
+    title, description, image_url = '', '', ''
+    article_count = len(parsed_feed.entries)
+    if article_count > 0:
+      if parsed_feed.channel is not None:
+        title = parsed_feed.channel.title
+        if hasattr(parsed_feed.channel, 'description'):
+          description = parsed_feed.channel.description
+        if hasattr(parsed_feed.channel, 'image'):
+          image_url = parsed_feed.channel.image.url
+        elif hasattr(parsed_feed.channel, 'icon'):
+          image_url = parsed_feed.channel.icon
+      
+      db_feed = Feed.objects.create(
+        title = title,
+        description = description,
+        image_url = image_url,
+        feed_url = feed_url,
+        article_count = article_count,
+        category = category,
+        user = user
+      )
+
+      return db_feed
+
+
 
 
 class ImageParser:
@@ -25,13 +76,12 @@ class ImageParser:
     src = ''
     if hasattr(feed, 'content'):
       src = feed.content[0].value.split("src=")
+      src = src[1].split('"')[1]
     elif hasattr(feed, 'media_thumbnail'):
       src = feed.media_thumbnail[0]['url']
     elif hasattr(feed, 'description'):
       src = feed.description.split("src=")
-    
-    if len(src) > 1:
-      src = src[1].split(" />\n")[0]
+      src = src[1].split('"')[1]
 
     return src
   
@@ -42,9 +92,10 @@ class ViewContext:
     board_form = BoardForm()
     category_form = CategoryForm()
     feed_form = FeedForm()
-    boards = Board.objects.all()
-    categories = Category.objects.all()
-    total_feeds = CategoryFeed.total_feed_count
+
+    boards = user.boards.all()
+    categories = user.categories.all()
+    total_feeds = CategoryFeed.total_feed_count(user)
 
     context = { 'board_form': board_form, 'category_form': category_form, 
              'feed_form': feed_form, 'boards': boards, 
