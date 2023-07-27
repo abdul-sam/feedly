@@ -1,3 +1,4 @@
+import feedparser
 from django.shortcuts import render, redirect
 from .models import Article, Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
@@ -118,8 +119,10 @@ def singleFeed(request, pk):
     feed_count = feed.articles.count()
     articles = feed.articles.all()
 
+    obj = { 'id': feed.id, 'type': 'feed', 'favorite': feed.favorit }
+
     feed_context = { 'title': feed.title, 'feed_count': feed_count, 
-                    'articles': articles}
+                    'articles': articles, 'obj': obj}
     
     context.update(feed_context)
     return render(request, 'feed.html', context)
@@ -137,8 +140,10 @@ def singleCategory(request, pk):
     feed_ids = [f.id for f in category.feeds.all()]
     articles = Article.objects.filter(feed__in=feed_ids).distinct()
     feed_count = articles.count()
+    obj = {'id': category.id, 'type': 'category', 'favorite': category.favorit}
 
-    feed_context = { 'title': category.name, 'feed_count': feed_count, 'articles': articles }
+    feed_context = { 'title': category.name, 'feed_count': feed_count, 
+                    'articles': articles, 'obj': obj }
     context.update(feed_context)
     return render(request, 'category.html', context)
   
@@ -175,8 +180,10 @@ def categoryList(request):
   feed_ids = [f.id for f in Feed.objects.filter(category__in=category_ids)]
   articles = Article.objects.filter(feed__in=feed_ids).distinct()
   feed_count = articles.count()
+  obj = {'id': user.pk, 'type': 'all'}
 
-  feed_context = { 'title': 'All Personal Feeds', 'feed_count': feed_count, 'articles': articles }
+  feed_context = { 'title': 'All Personal Feeds', 'feed_count': feed_count, 
+                  'articles': articles, 'obj': obj }
   context.update(feed_context)
   return render(request, 'category_list.html', context)
 

@@ -20,6 +20,16 @@
         </a>
       </li>
     </ul>
+    {% if favorite_categories.count > 0 or favorite_feeds.count > 0%}
+      <span class="pb-3 pt-3 feed-heading favorite-heading">FAVORITE</span>
+    {% else %}
+      <span class="pb-3 pt-3 feed-heading favorite-heading d-none">FAVORITE</span>
+    {% endif %}
+    <div class="w-100" id="favorite-list">
+      {% if favorite_categories.count > 0 or favorite_feeds.count > 0%}
+        {% include 'sections/favorite.html' %}
+      {% endif %}
+    </div>
     <span class="pb-3 pt-3 feed-heading">FEEDS</span>
     <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 pb-2 pt-2 text-dark" id="menu">
       <li class="nav-item w-100">

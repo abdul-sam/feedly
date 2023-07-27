@@ -5,6 +5,7 @@ class Category(models.Model):
   name = models.CharField(max_length=200, null=False)
   user = models.ForeignKey(User, related_name='categories', on_delete=models.CASCADE)
   total_feed_count = models.IntegerField(default=0)
+  favorit = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 

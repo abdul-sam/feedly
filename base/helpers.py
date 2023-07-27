@@ -97,9 +97,13 @@ class ViewContext:
     categories = user.categories.all()
     total_feeds = CategoryFeed.total_feed_count(user)
 
+    favorite_feeds = user.feeds.filter(favorit=True)
+    favorite_categories = user.categories.filter(favorit=True)
+
     context = { 'board_form': board_form, 'category_form': category_form, 
              'feed_form': feed_form, 'boards': boards, 
-             'categories': categories, 'total_feeds': total_feeds}
+             'categories': categories, 'total_feeds': total_feeds,
+             'favorite_feeds': favorite_feeds, 'favorite_categories': favorite_categories}
     
     return context
   

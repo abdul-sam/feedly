@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="col-md-12 mb-5 mt-2">
   <div class="row mt-2">
     <div class="col-md-6">
@@ -13,9 +15,19 @@
         </span>
         <span class="p-1 px-2"><i class="fa-solid fa-list-ul"></i></span>
         <span class="p-1 px-2"><i class="fa-solid fa-rotate-right"></i></span>
-        <span class="p-1 px-2"><i class="fa-regular fa-heart"></i></span>
+        {% if obj.type != 'all' %}
+          <span class="p-1 px-2 favorite-span" data-favorite="{{obj.favorite}}" data-id="{{obj.id}}" data-type="{{obj.type}}" onclick="heartClick();">
+            {% if obj.favorite %}
+              <i class="fa-solid fa-heart favorite"></i>
+              {% else %}
+              <i class="fa-regular fa-heart"></i>
+            {% endif %}
+          </span>
+        {% endif %}
         <span class="p-1 px-2"><i class="fa-solid fa-ellipsis"></i></span>
       </div>
     </div>
   </div>
 </div>
+
+<script src="{% static 'js/base.js' %}"></script>

@@ -1,0 +1,65 @@
+{% load static %}
+
+<ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 pb-2 pt-2 text-dark" id="menu">
+  {% if favorite_feeds.count > 0 %}
+    {% for feed in favorite_feeds %}
+      <li class="w-100">
+        <a href="{% url 'feed' feed.pk %}" class="nav-link px-0 align-middle main-link text-body fs-12">
+          <span class="text-dark p-1">
+            {% if feed.image_url != '' %}
+              <img src="{{feed.image_url}}" alt="{{feed.title}}" class="feed-img me-1">
+            {% else %}
+              <img src="{% static 'images/no-image.png' %}" alt="{{feed.title}}" class="feed-img me-1">
+            {% endif %}
+          </span>
+          <span class="d-none d-sm-inline">{{feed.title}}</span>
+          <span class="text-muted float-end fs-10 p-1">
+            {{feed.article_count}}
+          </span>
+        </a>
+      </li>
+    {% endfor %}
+  {% endif %}
+  {% if favorite_categories.count > 0 %}
+    {% for category in favorite_categories %}
+      <li class="nav-item w-100">
+
+        <span class="">
+          {% if category.feeds.count > 0 %}
+            <span href="#favsubmenu{{category.pk}}" data-bs-toggle="collapse" class="text-dark float-start submenu mt-2">
+              <i class="fa fa-chevron-down"></i>
+            </span>
+          {% endif %}
+          <a href="{% url 'category' category.pk %}" class="nav-link px-0 align-middle main-link text-body">
+            <span class="ms-3 d-none d-sm-inline fw-bold">{{category.name}}</span>
+            <span class="text-muted float-end fs-10 p-1">
+              {{category.total_feed_count}}
+            </span>
+          </a>
+        </span>
+
+        {% if category.feeds.count > 0 %}
+          <ul class="collapse nav flex-column ms-1" id="favsubmenu{{category.pk}}" data-bs-parent="#menu">
+            {% for feed in category.feeds.all %}
+              <li class="w-100">
+                <a href="{% url 'feed' feed.pk %}" class="nav-link px-0 align-middle main-link text-body fs-12">
+                  <span class="text-dark p-1">
+                    {% if feed.image_url != '' %}
+                      <img src="{{feed.image_url}}" alt="{{feed.title}}" class="feed-img me-1">
+                    {% else %}
+                      <img src="{% static 'images/no-image.png' %}" alt="{{feed.title}}" class="feed-img me-1">
+                    {% endif %}
+                  </span>
+                  <span class="d-none d-sm-inline">{{feed.title}}</span>
+                  <span class="text-muted float-end fs-10 p-1">
+                    {{feed.article_count}}
+                  </span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </li>
+    {% endfor %}
+  {% endif %}
+</ul>

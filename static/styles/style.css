@@ -40,12 +40,11 @@ body {
 }
 
 #sidebar{
-  display: flex;
-  flex-direction: column;
-	width: 20%;
-	vertical-align: top;
   position: fixed;
-  gap: 0.5rem;
+  width: 20%;
+  overflow-y: scroll;
+  top: 0;
+  bottom: 0;
 }
 
 .list-title {
@@ -114,4 +113,8 @@ body {
 .article-descrioption div,
 .article-descrioption p{
   padding: 10px;
+}
+
+.favorite{
+  color: green;
 }
