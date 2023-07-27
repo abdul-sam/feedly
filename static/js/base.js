@@ -16,7 +16,6 @@ const heartClick = () => {
     favorite: favorite,
   };
   ajaxRequest(url, "PUT", data).then((data) => {
-    debugger;
     let element = document.getElementsByClassName("favorite-span")[0];
     if (data.favorite) {
       updateElement(element, "True", "fa-solid favorite");
@@ -61,22 +60,21 @@ const appendFeed = (item) => {
   } else {
     image = "/static/images/no-image.png";
   }
-  feed = `<li class="nav-item w-100">
-              <a href="/feeds/${item.id}" class="nav-link px-0 align-middle main-link text-body fs-12">
-                <span class="text-dark p-1">
-                  <img src="${image}" alt="${item.title}" class="feed-img me-1">
-                </span>
-                <span class="d-none d-sm-inline">${item.title}</span>
-                <span class="text-muted float-end fs-10 p-1">
-                  ${item.article_count}
-                </span>
-              </a>
-            </li>`;
+  feed =  `<li class="nav-item w-100">
+            <a href="/feeds/${item.id}" class="nav-link px-0 align-middle main-link text-body fs-12">
+              <span class="text-dark p-1">
+                <img src="${image}" alt="${item.title}" class="feed-img me-1">
+              </span>
+              <span class="d-none d-sm-inline">${item.title}</span>
+              <span class="text-muted float-end fs-10 p-1">
+                ${item.article_count}
+              </span>
+            </a>
+          </li>`;
   return feed;
 };
 
 const appendCategory = (category) => {
-  debugger;
   category_li = `<li class="nav-item w-100">
                   <span class="">`;
 
@@ -95,16 +93,13 @@ const appendCategory = (category) => {
                   </span>`;
 
   if (category.feeds.length > 0) {
-    debugger;
-    cat_feed_list = `<ul class="collapse nav flex-column ms-1" id="apisubmenu${category.id}" data-bs-parent="#menu">`;
+    category_li += `<ul class="collapse nav flex-column ms-1" id="apisubmenu${category.id}" data-bs-parent="#menu">`;
     category.feeds.map((feed) => {
-      cat_feed_list += appendFeed(feed);
+      category_li += appendFeed(feed);
     });
-    cat_feed_list += "</ul>";
+    category_li += "</ul>";
   }
-  category_li += `${cat_feed_list}
-                    </li>
-                  </ul>`;
+  category_li += `</li>`;
 
   return category_li;
 };
