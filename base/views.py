@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Article, Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
 
-from .helpers import CategoryFeed, FeedArticle, ViewContext
+from .helpers import CategoryFeed, FeedArticle, FeedImporter, ViewContext
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -12,7 +12,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 def home(request):
-  context = ViewContext.contextView(request.user)
+  feeds = Feed.objects.all()
+  context = {'feeds': feeds}
+  # context = ViewContext.contextView(request.user)
+
   return render(request, 'home.html', context)
 
 
@@ -218,3 +221,15 @@ def recentlyRead(request):
   article_context = {'articles': articles, 'title': 'Recently Read'}
   context.update(article_context)
   return render(request, 'read.html', context)
+
+
+def importFeed(request, pk):
+  print("ID: ", pk)
+  feed = Feed.objects.get(pk=pk)
+  if feed is not None:
+    FeedImporter.importFeed(feed)
+
+  return redirect('adminFeedUrl')
+
+def adminFeedUrl(request):
+  pass

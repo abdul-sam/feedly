@@ -3,6 +3,32 @@ from django.db.models import Sum
 from .models import Article, Board, Category, Feed
 from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
 
+
+class FeedImporter:
+  def importFeed(feed):
+    parsed_feed = feedparser.parse(feed.feed_url)
+    title, description, image_url = '', '', ''
+    article_count = len(parsed_feed.entries)
+    if article_count > 0:
+      if parsed_feed.channel is not None:
+        title = parsed_feed.channel.title
+        if hasattr(parsed_feed.channel, 'description'):
+          description = parsed_feed.channel.description
+        if hasattr(parsed_feed.channel, 'image'):
+          image_url = parsed_feed.channel.image.url
+        elif hasattr(parsed_feed.channel, 'icon'):
+          image_url = parsed_feed.channel.icon
+      
+      feed.title = title
+      feed.description = description
+      feed.image_url = image_url
+      feed.article_count = article_count
+      feed.save()
+
+      for article in parsed_feed.entries:
+        FeedArticle.importArticle(article, feed)
+
+
 class CategoryFeed:
 
   def feedCount(category):
@@ -21,6 +47,26 @@ class CategoryFeed:
 
 
 class FeedArticle:
+
+  def importArticle(article, feed):
+    title = article.title
+    description = ''
+    if hasattr(article, 'description'):
+      description = article.description
+    elif hasattr(article, 'content'):
+      description = article.content
+
+    src = ImageParser.parseImage(article)
+    src = src if src != '' else ''
+
+    Article.objects.create(
+      title = title,
+      description = description,
+      image_url = src,
+      link = article.link,
+      feed = feed
+    )
+
 
   def addArticle(article, feed, user):
     title = article.title
@@ -69,19 +115,22 @@ class FeedArticle:
 
 
 
-
 class ImageParser:
 
   def parseImage(feed):
     src = ''
     if hasattr(feed, 'content'):
       src = feed.content[0].value.split("src=")
-      src = src[1].split('"')[1]
+      if len(src) > 1:
+        src = src[1].split('"')[1]
+      else:
+        src = ''
     elif hasattr(feed, 'media_thumbnail'):
       src = feed.media_thumbnail[0]['url']
     elif hasattr(feed, 'description'):
       src = feed.description.split("src=")
-      src = src[1].split('"')[1]
+      if len(src) > 1:
+        src = src[1].split('"')[1]
 
     return src
   

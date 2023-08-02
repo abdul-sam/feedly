@@ -31,6 +31,10 @@ body {
   font-size: 12px !important;
 }
 
+.fs-14{
+  font-size: 14px !important;
+}
+
 .fs-16{
   font-size: 16px !important;
 }
@@ -49,6 +53,14 @@ body {
 
 .cursor-pointer{
   cursor: pointer;
+}
+
+.px-200{
+  padding: 0px 200px !important;
+}
+
+hr{
+  border-top: 0.5px solid !important;
 }
 
 #sidebar{
@@ -157,6 +169,7 @@ body {
   opacity: 0.3;
 }
 
+.feed--follow-btn,
 .top-layout {
   opacity: 0;
   position: absolute;
@@ -164,6 +177,10 @@ body {
   right: 0;
   text-align: end;
   width: 100%;
+}
+
+.feed--follow-btn{
+  opacity: 1;
 }
 
 /* Right Side Modal */
@@ -233,4 +250,16 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.border-radius-30{
+  border-radius: 30px !important;
+}
+
+#searchInput{
+  height: 50px;
+}
+
+.feed--image{
+  height: 90px !important;
 }
