@@ -16,6 +16,8 @@ urlpatterns = [
   re_path(r'^feeds/new/$', views.newFeed, name='new_feed'),
   re_path(r'^feeds/(?P<pk>\d+)/$', views.singleFeed, name='feed'),
   re_path(r'^baords/new/$', views.newBoard, name='new_board'),
+  re_path(r'^read-later/$', views.readLater, name='read_later'),
+  re_path(r'^recently-read/$', views.recentlyRead, name='recently_read'),
 
   re_path(r'^categories/(?P<category_pk>\d+)/feeds/(?P<feed_pk>\d+)/article/(?P<pk>\d+)/$', views.article, name='article'),
 ]

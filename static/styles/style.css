@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700");
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
+
 html {
 	height: 100%;
 }
@@ -5,6 +8,7 @@ html {
 body {
 	margin: 0;
 	height: 100%;
+  font-family: "Roboto Slab", serif;
 }
 
 .text-decoration-none{
@@ -31,12 +35,20 @@ body {
   font-size: 16px !important;
 }
 
+.fs-22{
+  font-size: 22px !important;
+}
+
 .bg-gray{
   background-color: lightgray !important;
 }
 
 .border-none{
   border: none;
+}
+
+.cursor-pointer{
+  cursor: pointer;
 }
 
 #sidebar{
@@ -115,6 +127,110 @@ body {
   padding: 10px;
 }
 
-.favorite{
+.color-green{
   color: green;
+}
+
+.toast-message{
+  z-index: 999999999;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+.relative-position{
+  position: relative;
+}
+
+.card:hover {
+  box-shadow: 0px 30px 18px -8px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  height: 300px;
+}
+.card:hover .top-layout {
+  opacity: 1;
+}
+
+.card:hover .card-img-top {
+  opacity: 0.3;
+}
+
+.top-layout {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: end;
+  width: 100%;
+}
+
+/* Right Side Modal */
+#right-side-modal .modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	width: auto;
+	height: 100%;
+	-ms-transform: translate3d(0%, 0, 0);
+	-o-transform: translate3d(0%, 0, 0);
+  -webkit-transform: translate(0%, 0)scale(1);
+  transform: translate(0%, 0)scale(1);
+}
+
+#right-side-modal .modal.right .modal-content {
+	height: 100%;
+	overflow-y: auto;
+}
+
+#right-side-modal .modal.right .modal-body {
+	padding: 50px 200px;
+}
+
+/*Right*/
+#right-side-modal .modal.right.fade .modal-dialog {
+	right: 0px;
+	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	-moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+	-o-transition: opacity 0.3s linear, right 0.3s ease-out;
+	transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+#right-side-modal .modal.right.fade.in .modal-dialog {
+	right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+#right-side-modal .modal-content {
+	border-radius: 0;
+	border: none;
+}
+
+#right-side-modal .modal-header {
+	border-bottom-color: #eeeeee;
+	background-color: #fafafa;
+  position: sticky;
+  top: 0;
+  background-color: inherit;
+  z-index: 1055;
+}
+
+#right-side-modal img {
+  width: 100%;
+}
+
+
+/* Loader */
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

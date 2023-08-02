@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
     <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
     {% load django_bootstrap5 %}
 
@@ -19,6 +20,7 @@
     <title>Feedly Clone</title>
 
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
   </head>
 
   <body>
@@ -34,8 +36,12 @@
           {% endblock %}
           {% include 'modals.html' %}
         </div>
+      </div>
     </div>
-  </div>
-
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast" data-autohide="false">
+      <div class="toast-body">
+        Hello, world! This is a toast message.
+      </div>
+    </div>
   </body>
 </html>

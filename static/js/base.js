@@ -18,7 +18,7 @@ const heartClick = () => {
   ajaxRequest(url, "PUT", data).then((data) => {
     let element = document.getElementsByClassName("favorite-span")[0];
     if (data.favorite) {
-      updateElement(element, "True", "fa-solid favorite");
+      updateElement(element, "True", "fa-solid color-green");
     } else {
       updateElement(element, "False", "fa-regular");
     }
@@ -60,7 +60,7 @@ const appendFeed = (item) => {
   } else {
     image = "/static/images/no-image.png";
   }
-  feed =  `<li class="nav-item w-100">
+  feed = `<li class="nav-item w-100">
             <a href="/feeds/${item.id}" class="nav-link px-0 align-middle main-link text-body fs-12">
               <span class="text-dark p-1">
                 <img src="${image}" alt="${item.title}" class="feed-img me-1">
@@ -111,6 +111,141 @@ const updateElement = (element, favorite, klasses) => {
   element.innerHTML = `<i class="${klasses} fa-heart"></i>`;
 };
 
+const readLaterClick = (event) => {
+  CSRF_TOKEN = document.querySelector("[name=csrfmiddlewaretoken]").value;
+  let element = event.target.parentElement.closest(".read-later-span");
+  let dataset = element.dataset;
+  const id = dataset.id;
+  const read_later = dataset.readlater;
+  url = `${BASE_URL}api/article/${id}/read-later/`;
+  let data = {
+    readLater: read_later,
+  };
+  ajaxRequest(url, "PUT", data).then((data) => {
+    elements = document.querySelectorAll(".read-later-span")
+    Array.from(elements).map((item) => {
+      if(item.dataset.id == element.dataset.id){
+        if (data.read_later) {
+          updateReadLaterElement(item, "True", "fa-solid color-green");
+        } else {
+          updateReadLaterElement(item, "False", "fa-regular");
+        }
+      }
+    })
+  });
+};
+
+const updateReadLaterElement = (element, read_later, klasses) => {
+  element.dataset.readlater = read_later;
+  element.innerHTML = `<i class="${klasses} fa-bookmark"></i>`;
+};
+
+const recentlyReadClick = (event) => {
+  CSRF_TOKEN = document.querySelector("[name=csrfmiddlewaretoken]").value;
+  let element = event.target.parentElement.closest(".recently-read-span");
+  let dataset = element.dataset;
+  const id = dataset.id;
+  const recently_read = dataset.recentlyread;
+  url = `${BASE_URL}api/article/${id}/recently-read/`;
+  let data = {
+    recentlyRead: recently_read,
+  };
+  ajaxRequest(url, "PUT", data).then((data) => {
+    elements = document.querySelectorAll(".recently-read-span")
+    Array.from(elements).map((item) => {
+      if(item.dataset.id == element.dataset.id){
+        if (data.recently_read) {
+          updateRecentlyReadElement(item, "True", "fa-check-double color-green");
+        } else {
+          updateRecentlyReadElement(item, "False", "fa-check");
+        }
+      }
+    })
+  });
+};
+
+const updateRecentlyReadElement = (element, recently_read, klasses) => {
+  element.dataset.recentlyread = recently_read;
+  element.innerHTML = `<i class="fa solid ${klasses}"></i>`;
+};
+
+const articleClick = (event) => {
+  debugger;
+  let dataset = event.target.parentElement.dataset;
+  const id = dataset.id;
+  url = `${BASE_URL}api/article/${id}/`;
+  setTimeout(() => {
+    appendArticle(url)
+  }, 1000)
+};
+
+const appendArticle = (url) => {
+  getAjaxRequest(url, "GET").then((data) => {
+    let content = "";
+    let actions = "";
+    let articleActions = document.getElementById("articleActions");
+    let articleContent = document.getElementById("articleContent");
+
+    actions += `<span 
+                  class="p-1 px-2 cursor-pointer read-later-span" 
+                  data-readLater="${data.read_later ? 'True' : 'False'}" 
+                  data-id="${data.id}" onclick="readLaterClick(event);"
+                >`;
+
+    if (data.read_later) {
+      actions += '<i class="fa-solid fa-bookmark color-green"></i>';
+    } else {
+      actions += `<i class="fa-regular fa-bookmark text-dark"></i>`;
+    }
+    actions += "</span>";
+
+    actions += `<span 
+                  class="p-1 px-2 cursor-pointer recently-read-span" 
+                  data-recentlyread="${data.recently_read ? 'True' : 'False'}" 
+                  data-id="${data.id}" onclick="recentlyReadClick(event);"
+                >`;
+
+    if (data.recently_read) {
+      actions += `<i class="fa-solid fa-check-double color-green"></i>`;
+    } else {
+      actions += `<i class="fa-solid fa-check text-dark"></i>`;
+    }
+    actions += "</span>";
+
+    actions +=
+      '<span class="p-1 px-2 cursor-pointer"><i class="fa-regular fa-star"></i></span>';
+
+    date = new Date(data.created_at.replace('T', ' '));
+    articleDate = `${date.toDateString()} at ${date.toLocaleTimeString()}`
+    var description = data.description.replace(/<img[^>]*>/g, "");
+    content += `<h4 class="modal-title">${data.title}</h4>`;
+    content += `<small class="mt-2 mb-5 text-muted fs-12">
+                  <a href="" class="text-decoration-none">
+                    <span>${data.feed.article_count}</span> ${data.feed.title} | 
+                  </a>
+                  <span>${articleDate}</span>
+                </small>`;
+    content += `<img src="${data.image_url}" class="mt-4"/>`;
+    content += `<div id="articleDescription" class="mt-4">
+                  ${description}
+                </div>`;
+
+    content += `<span class="mb-5">
+                  <a href="${data.link}" class="text-decoration-none text-muted fw-bold fs-12 pb-5" target="_blank">
+                    <div class="card mt-5">
+                      <div class="card-body text-center">
+                        VISIT WEBSITE
+                      </div>
+                    </div>
+                  </a>
+                </span>`;
+
+    articleActions.innerHTML = actions;
+    articleContent.innerHTML = content;
+    console.log("Data: ", data);
+  });
+}
+
 let ajaxRequest = async (url = "", method = "", data = {}) => {
   const response = await fetch(url, {
     method: method,
@@ -119,6 +254,16 @@ let ajaxRequest = async (url = "", method = "", data = {}) => {
       "X-CSRFToken": CSRF_TOKEN,
     },
     body: JSON.stringify(data),
+  });
+  return response.json();
+};
+
+let getAjaxRequest = async (url = "") => {
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   return response.json();
 };

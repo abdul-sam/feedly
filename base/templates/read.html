@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12 mb-5 mt-2">
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <h2 class="mt-2 mb-0">{{title}}</h2>
+        </div>
+      </div>
+    </div>
+    {% include 'feed_component.html' %}
+  </div>
+</div>
+{% endblock %}

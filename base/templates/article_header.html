@@ -8,10 +8,22 @@
     </div>
     <div class="col-md-4 text-end feed-count-div mt-3">
       <div class="col-md-12">
-        <span class="p-1 px-2"><i class="fa-regular fa-bookmark"></i></span>
-        <span class="p-1 px-2"><i class="fa-regular fa-star"></i></span>
-        <span class="p-1 px-2 feed_check"><i class="fa-solid fa-check"></i></span>
-        <span class="p-1 px-2"><i class="fa-solid fa-ellipsis"></i></span>
+        <span class="p-1 px-2 cursor-pointer read-later-span" data-readLater="{{article.read_later}}" data-id="{{article.id}}" onclick="readLaterClick(event);">
+          {% if article.read_later %}
+            <i class="fa-solid fa-bookmark color-green"></i>
+          {% else %}
+            <i class="fa-regular fa-bookmark"></i>
+          {% endif %}
+        </span>
+        <span class="p-1 px-2 cursor-pointer"><i class="fa-regular fa-star"></i></span>
+        <span class="p-1 px-2 cursor-pointer recently-read-span" data-recentlyread="{{article.recently_read}}" data-id="{{article.id}}" onclick="recentlyReadClick(event);">
+          {% if article.recently_read %}
+            <i class="fa-solid fa-check-double color-green"></i>
+          {% else %}
+            <i class="fa-solid fa-check"></i>
+          {% endif %}
+        </span>
+        <span class="p-1 px-2 cursor-pointer"><i class="fa-solid fa-ellipsis"></i></span>
       </div>
     </div>
   </div>

@@ -2,22 +2,43 @@
 
 {% for article in articles %}
   <div class="col-lg-4 mb-4">
-    <a href="{% url 'article' article.feed.category.pk article.feed.pk article.pk %}" class="text-decoration-none text-body">
-      <div class="card border-none">
-        {% if article.image_url != '' %}
-          <img
-            src="{{article.image_url}}"
-            alt=""
-            class="card-img-top"
-          />
-        {% endif %}
-        <div class="card-body">
-          <h5 class="card-title">{{article.title}}</h5>
+    <div class="card">
+      {% if article.image_url != '' %}
+        <img
+          src="{{article.image_url}}"
+          alt=""
+          class="card-img-top"
+        />
+      {% endif %}
+      <div class="top-layout mt-3">
+        <span class="p-1 px-2 cursor-pointer read-later-span fs-22" data-readLater="{{article.read_later}}" data-id="{{article.id}}" onclick="readLaterClick(event);">
+          {% if article.read_later %}
+            <i class="fa-solid fa-bookmark color-green"></i>
+          {% else %}
+            <i class="fa-regular fa-bookmark text-dark"></i>
+          {% endif %}
+        </span>
+        <span class="p-1 px-2 cursor-pointer recently-read-span fs-22 me-3" data-recentlyread="{{article.recently_read}}" data-id="{{article.id}}" onclick="recentlyReadClick(event);">
+          {% if article.recently_read %}
+            <i class="fa-solid fa-check-double color-green"></i>
+          {% else %}
+            <i class="fa-solid fa-check text-dark"></i>
+          {% endif %}
+        </span>
+      </div>
+      <div class="card-body">
+        <a href="{% url 'category' article.feed.category.pk %}" class="text-decoration-none">
+          <small class="mt-2 mb-5 text-muted fs-12">{{article.feed.category.name}}</small>
+        </a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#articleModal" data-id="{{article.id}}" class="text-decoration-none text-body" onclick="articleClick(event);">
+          <h5 class="card__title mt-3">{{article.title}}</h5>
           <p class="card-text">
             {{article.description|feed_description}}
           </p>
-        </div>
+        </a>
       </div>
-    </a>
+    </div>
   </div>
 {% endfor %}
+
+{% include 'article_modal.html' %}

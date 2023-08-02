@@ -1,0 +1,9 @@
+@media only screen and (max-width: 800px) {
+  #sidebar{
+    width: 35%;
+  }
+  #content{
+    width: 65%;
+    margin-left: 35%;
+  }
+}

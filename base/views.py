@@ -197,3 +197,24 @@ def article(request, category_pk, feed_pk, pk):
   article_context = {'article': article}
   context.update(article_context)
   return render(request, 'article.html', context)
+
+
+@login_required(login_url='login')
+def readLater(request):
+  user = request.user
+  context = ViewContext.contextView(user)
+  articles = user.articles.filter(read_later=True)
+
+  article_context = {'articles': articles, 'title': 'Read Later'}
+  context.update(article_context)
+  return render(request, 'read.html', context)
+
+@login_required(login_url='login')
+def recentlyRead(request):
+  user = request.user
+  context = ViewContext.contextView(user)
+  articles = user.articles.filter(recently_read=True)
+
+  article_context = {'articles': articles, 'title': 'Recently Read'}
+  context.update(article_context)
+  return render(request, 'read.html', context)
