@@ -1,6 +1,6 @@
 from typing import Any
 from django.forms import ModelForm
-from .models import Board, Category, Feed
+from .models import Board, Category, Feed, Folder
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -43,6 +43,19 @@ class CategoryForm(ModelForm):
     model = Category
     fields = '__all__'
     exclude = ['total_feed_count', 'user']
+
+
+class FolderForm(ModelForm):
+
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    for visible in self.visible_fields():
+      visible.field.widget.attrs['class'] = 'form-control'
+
+  class Meta:
+    model = Folder
+    fields = '__all__'
+    exclude = ['total_article_count', 'user']
 
 
 class FeedForm(ModelForm):

@@ -16,43 +16,52 @@
           <input class="form-control border-radius-30 px-5" id="searchInput">
         </div>
       </div>
-      {% for feed in feeds %}
-        <div class="col-lg-12 mb-4">
-          <div class="card">
-            
-            <div class="feed--follow-btn mt-3">
-              <span class="p-1 px-2 cursor-pointer" data-id="{{feed.id}}">
-                <button class="btn btn-outline-success px-3 fs-12 me-4 py-1">Follow</button>
-              </span>
-            </div>
-            <div class="card-body">
-              <div class="d-flex">
-                {% if feed.image_url != '' %}
-                  <img
-                    src="{{feed.image_url}}"
-                    alt=""
-                    class="feed--image"
-                    width="90px"
-                  />
-                {% else %}
-                  <img
-                    src="{% static 'images/no-image.png' %}"
-                    alt=""
-                    class="feed--image"
-                    width="90px"
-                  />
-                {% endif %}
-                <a href="#" data-id="{{feed.id}}" class="text-decoration-none text-body ms-4">
-                  <h5 class="card__title mt-3">{{feed.title}}</h5>
-                  <p class="card-text text-muted fs-14">
-                    {{feed.description|feed_description}}
-                  </p>
-                </a>
+      <div id="feed--cards">
+        {% for feed in feeds %}
+          <div class="col-lg-12 mb-4">
+            <div class="card">
+              
+              <div class="feed--follow-btn mt-3">
+                <span class="p-1 px-2 cursor-pointer" data-id="{{feed.id}}">
+                  <button 
+                    class="btn btn-outline-success px-3 fs-12 me-4 py-1 dropdown-toggle"
+                    id="dropdown{{feed.id}}" data-bs-toggle="dropdown" aria-expanded="false"
+                    onclick="preventClose(event);"
+                  >
+                    Follow
+                  </button>
+                  {% include 'follow/categories.html' %}
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="d-flex">
+                  {% if feed.image_url != '' %}
+                    <img
+                      src="{{feed.image_url}}"
+                      alt=""
+                      class="feed--image"
+                      width="90px"
+                    />
+                  {% else %}
+                    <img
+                      src="{% static 'images/no-image.png' %}"
+                      alt=""
+                      class="feed--image"
+                      width="90px"
+                    />
+                  {% endif %}
+                  <a href="#" data-id="{{feed.id}}" class="text-decoration-none text-body ms-4">
+                    <h5 class="card__title mt-3">{{feed.title}}</h5>
+                    <p class="card-text text-muted fs-14">
+                      {{feed.description|feed_description}}
+                    </p>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

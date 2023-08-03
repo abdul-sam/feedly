@@ -217,7 +217,7 @@ const appendArticle = (url) => {
 
     date = new Date(data.created_at.replace('T', ' '));
     articleDate = `${date.toDateString()} at ${date.toLocaleTimeString()}`
-    var description = data.description.replace(/<img[^>]*>/g, "");
+    let description = descriptionParser(feed.description)
     content += `<h4 class="modal-title">${data.title}</h4>`;
     content += `<small class="mt-2 mb-5 text-muted fs-12">
                   <a href="" class="text-decoration-none">
@@ -246,24 +246,3 @@ const appendArticle = (url) => {
   });
 }
 
-let ajaxRequest = async (url = "", method = "", data = {}) => {
-  const response = await fetch(url, {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": CSRF_TOKEN,
-    },
-    body: JSON.stringify(data),
-  });
-  return response.json();
-};
-
-let getAjaxRequest = async (url = "") => {
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return response.json();
-};

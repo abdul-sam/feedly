@@ -20,13 +20,13 @@
         </a>
       </li>
     </ul>
-    {% if favorite_categories.count > 0 or favorite_feeds.count > 0%}
+    {% if favorite_folders.count > 0 or favorite_feeds.count > 0 %}
       <span class="pb-3 pt-3 feed-heading favorite-heading">FAVORITE</span>
     {% else %}
       <span class="pb-3 pt-3 feed-heading favorite-heading d-none">FAVORITE</span>
     {% endif %}
     <div class="w-100" id="favorite-list">
-      {% if favorite_categories.count > 0 or favorite_feeds.count > 0%}
+      {% if favorite_folders.count > 0 or favorite_feeds.count > 0%}
         {% include 'sections/favorite.html' %}
       {% endif %}
     </div>
@@ -41,26 +41,24 @@
           </span>
         </a>
       </li>
-      {% for category in categories %}
+      {% for folder in folders %}
         <li class="nav-item w-100">
 
-         <span class="">
-            {% if category.feeds.count > 0 %}
-              <span href="#submenu{{category.pk}}" data-bs-toggle="collapse" class="text-dark float-start submenu mt-2">
-                <i class="fa fa-chevron-down"></i>
-              </span>
-            {% endif %}
-            <a href="{% url 'category' category.pk %}" class="nav-link px-0 align-middle main-link text-body">
-              <span class="ms-3 d-none d-sm-inline fw-bold">{{category.name}}</span>
+          <span class="">
+            <span href="#submenu{{folder.pk}}" data-bs-toggle="collapse" class="text-dark float-start submenu mt-2">
+              <i class="fa fa-chevron-down"></i>
+            </span>
+            <a href="{% url 'category' folder.pk %}" class="nav-link px-0 align-middle main-link text-body">
+              <span class="ms-3 d-none d-sm-inline fw-bold">{{folder.name}}</span>
               <span class="text-muted float-end fs-10 p-1">
-                {{category.total_feed_count}}
+                {{folder.total_article_count}}
               </span>
             </a>
-         </span>
+          </span>
+          <ul class="collapse nav flex-column ms-1" id="submenu{{folder.pk}}" data-bs-parent="#menu">
 
-          {% if category.feeds.count > 0 %}
-            <ul class="collapse nav flex-column ms-1" id="submenu{{category.pk}}" data-bs-parent="#menu">
-              {% for feed in category.feeds.all %}
+            {% if folder.feed_set.count > 0 %}
+              {% for feed in folder.feed_set.all %}
                 <li class="w-100">
                   <a href="{% url 'feed' feed.pk %}" class="nav-link px-0 align-middle main-link text-body fs-12">
                     <span class="text-dark p-1">
@@ -77,13 +75,13 @@
                   </a>
                 </li>
               {% endfor %}
-            </ul>
-          {% endif %}
+            {% endif %}
+          </ul>
         </li>
       {% endfor %}
       <li class="w-100">
         <a href="#" class="nav-link align-middle text-body px-4 mt-3 py-1">
-          <span class="ms-1 d-none d-sm-inline" data-bs-toggle="modal" data-bs-target="#categoryModal">Create Category</span>
+          <span class="ms-1 d-none d-sm-inline" data-bs-toggle="modal" data-bs-target="#folderModal">Create Folder</span>
         </a>
       </li>
     </ul>

@@ -1,7 +1,7 @@
 import feedparser
 from django.shortcuts import render, redirect
-from .models import Article, Board, Category, Feed
-from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
+from .models import Article, Board, Category, Feed, Folder
+from .forms import BoardForm, CategoryForm, FeedForm, FolderForm, SignUpForm, UserForm
 
 from .helpers import CategoryFeed, FeedArticle, FeedImporter, ViewContext
 
@@ -13,9 +13,8 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url='login')
 def home(request):
   feeds = Feed.objects.all()
-  context = {'feeds': feeds}
-  # context = ViewContext.contextView(request.user)
-
+  context = ViewContext.contextView(request.user)
+  context.update({'feeds': feeds})
   return render(request, 'home.html', context)
 
 
@@ -83,6 +82,23 @@ def newCategory(request):
     if form.is_valid():
       name = request.POST.get('name')
       Category.objects.create(
+        name = name,
+        user = request.user
+      )
+      return redirect('home')
+  
+  context = { 'form': form }
+  return render(request, 'home.html', context)
+
+
+@login_required(login_url='login')
+def newFolder(request):
+  form = FolderForm()
+  if request.method == 'POST':
+    form = FolderForm(request.POST)
+    if form.is_valid():
+      name = request.POST.get('name')
+      Folder.objects.create(
         name = name,
         user = request.user
       )

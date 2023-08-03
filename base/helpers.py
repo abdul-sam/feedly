@@ -1,7 +1,7 @@
 import feedparser
 from django.db.models import Sum
 from .models import Article, Board, Category, Feed
-from .forms import BoardForm, CategoryForm, FeedForm, SignUpForm, UserForm
+from .forms import BoardForm, FeedForm, FolderForm, SignUpForm, UserForm
 
 
 class FeedImporter:
@@ -117,42 +117,43 @@ class FeedArticle:
 
 class ImageParser:
 
-  def parseImage(feed):
-    src = ''
-    if hasattr(feed, 'content'):
-      src = feed.content[0].value.split("src=")
-      if len(src) > 1:
-        src = src[1].split('"')[1]
-      else:
-        src = ''
-    elif hasattr(feed, 'media_thumbnail'):
-      src = feed.media_thumbnail[0]['url']
-    elif hasattr(feed, 'description'):
-      src = feed.description.split("src=")
-      if len(src) > 1:
-        src = src[1].split('"')[1]
+  def getImage(data):
+    src = data.split("src=")
+    src = src[1].split('"')[1] if len(src) > 1 else ''
 
     return src
   
+
+  def parseImage(feed):
+    src = ''
+    if hasattr(feed, 'content'):
+      src = ImageParser.getImage(feed.content[0].value)
+    elif hasattr(feed, 'media_thumbnail'):
+      src = feed.media_thumbnail[0]['url']
+    elif hasattr(feed, 'description'):
+      src = ImageParser.getImage(feed.description)
+
+    return src
+
 
 class ViewContext:
 
   def contextView(user):
     board_form = BoardForm()
-    category_form = CategoryForm()
+    folder_form = FolderForm()
     feed_form = FeedForm()
 
     boards = user.boards.all()
-    categories = user.categories.all()
+    folders = user.folders.all()
     total_feeds = CategoryFeed.total_feed_count(user)
 
-    favorite_feeds = user.feeds.filter(favorit=True)
-    favorite_categories = user.categories.filter(favorit=True)
+    favorite_feeds = [f.feed for f in user.favorites.filter(favorite_type='Feed')]
+    favorite_folders = [f.feed for f in user.favorites.filter(favorite_type='Folder')]
 
-    context = { 'board_form': board_form, 'category_form': category_form, 
+    context = { 'board_form': board_form, 'folder_form': folder_form, 
              'feed_form': feed_form, 'boards': boards, 
-             'categories': categories, 'total_feeds': total_feeds,
-             'favorite_feeds': favorite_feeds, 'favorite_categories': favorite_categories}
+             'folders': folders, 'total_feeds': total_feeds,
+             'favorite_feeds': favorite_feeds, 'favorite_folders': favorite_folders}
     
     return context
   
