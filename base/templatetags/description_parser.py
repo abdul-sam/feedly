@@ -14,3 +14,9 @@ def feed_description(description):
 @register.filter
 def article_description(description):
   return description.replace('Continue reading&hellip;', '')
+
+
+@register.filter
+def getFeeds(folder):
+  return [ff.feed for ff in folder.folder_feeds.all()]
+

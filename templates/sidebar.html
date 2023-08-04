@@ -1,4 +1,4 @@
-{% load static %}
+{% load static description_parser %}
 
 <div class="px-sm-2 px-0 bg-light">
   <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
@@ -31,7 +31,7 @@
       {% endif %}
     </div>
     <span class="pb-3 pt-3 feed-heading">FEEDS</span>
-    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 pb-2 pt-2 text-dark" id="menu">
+    <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100 pb-2 pt-2 text-dark" id="feed--list">
       <li class="nav-item w-100">
         <a href="{% url 'categories' %}" class="nav-link px-0 align-middle main-link text-body">
           <i class="fa-solid fa-bars fs-16"></i>
@@ -57,8 +57,8 @@
           </span>
           <ul class="collapse nav flex-column ms-1" id="submenu{{folder.pk}}" data-bs-parent="#menu">
 
-            {% if folder.feed_set.count > 0 %}
-              {% for feed in folder.feed_set.all %}
+            {% if folder|getFeeds %}
+              {% for feed in folder|getFeeds %}
                 <li class="w-100">
                   <a href="{% url 'feed' feed.pk %}" class="nav-link px-0 align-middle main-link text-body fs-12">
                     <span class="text-dark p-1">

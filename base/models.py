@@ -35,6 +35,9 @@ class Folder(models.Model):
 
   def __str__(self):
     return self.name
+  
+  class Meta:
+    ordering = ['-created_at']
 
 
 class Feed(models.Model):
@@ -45,6 +48,9 @@ class Feed(models.Model):
   article_count = models.IntegerField(default=0)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+
+  def __str__(self):
+    return self.title
 
 
 class FolderFeed(models.Model):
@@ -75,6 +81,11 @@ class Article(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
+  def feed_title(self):
+    return format_html('<a href="/admin/base/feeds/{}/change">{}</a>', self.id, self.feed.title)
+
+  feed_title.short_description = "Feed"
+
 
 class Reading(models.Model):
   read_later = models.BooleanField(default=False)
@@ -91,5 +102,4 @@ from .helpers import FeedImporter
 @receiver(post_save, sender=Feed)
 def saveArticles(sender, instance, created, **kwargs):
   if created:
-    print(instance)
     FeedImporter.importFeed(instance)

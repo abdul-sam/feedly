@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Article, Board, Category, Feed, Folder
 from .forms import BoardForm, CategoryForm, FeedForm, FolderForm, SignUpForm, UserForm
 
-from .helpers import CategoryFeed, FeedArticle, FeedImporter, ViewContext
+from .helpers import FeedArticle, FeedImporter, ViewContext
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -118,7 +118,7 @@ def newFeed(request):
     feed_url = request.POST.get('feed_url')
     feed = feedparser.parse(feed_url)
     db_feed = FeedArticle.addFeed(feed, feed_url, category, user)
-    CategoryFeed.feedCount(category)
+    # CategoryFeed.feedCount(category)
     for article in feed.entries:
       FeedArticle.addArticle(article, db_feed, user)
       

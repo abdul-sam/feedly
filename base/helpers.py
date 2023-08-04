@@ -31,19 +31,20 @@ class FeedImporter:
 
 class CategoryFeed:
 
-  def feedCount(category):
-    feed_count = 0
-    for f in category.feeds.all():
-      parsed_feed = feedparser.parse(f.feed_url)
-      feed_count += len(parsed_feed.entries)
+  def feedCount(folder):
+    total_article_count = 0
 
-    category.total_feed_count = feed_count
-    category.save()
+    counts = [ff.feed.article_count for ff in folder.folder_feeds.all()]
+    for count in counts:
+      total_article_count += count
+
+    folder.total_article_count = total_article_count
+    folder.save()
 
   def total_feed_count(user):
-    feed_count = user.categories.aggregate(Sum('total_feed_count'))['total_feed_count__sum']
-    total_feed_count = feed_count if feed_count is not None else 0
-    return total_feed_count
+    feed_count = user.folders.aggregate(Sum('total_article_count'))['total_article_count__sum']
+    total_article_count = feed_count if feed_count is not None else 0
+    return total_article_count
 
 
 class FeedArticle:

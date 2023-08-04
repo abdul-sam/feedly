@@ -54,12 +54,7 @@ const appendFaviroteSection = (data) => {
 };
 
 const appendFeed = (item) => {
-  image = "";
-  if (item.image_url) {
-    image = item.image_url;
-  } else {
-    image = "/static/images/no-image.png";
-  }
+  image = item.image_url ? item.image_url : "/static/images/no-image.png"
   feed = `<li class="nav-item w-100">
             <a href="/feeds/${item.id}" class="nav-link px-0 align-middle main-link text-body fs-12">
               <span class="text-dark p-1">

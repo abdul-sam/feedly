@@ -9,4 +9,9 @@ urlpatterns=[
     re_path(r'^article/(?P<pk>\d+)/$', views.getArticle, name='article'),
     re_path(r'^article/(?P<pk>\d+)/recently-read/$', views.recentlyReadArticle, name='recently-read'),
     re_path(r'^categories/$', views.getCategories, name='api-categories'),
+    re_path(r'^folders/$', views.getFolders, name='api-folders'),
+    re_path(r'^feeds/$', views.getFeeds, name='api-feeds'),
+    
+    re_path(r'^folder/(?P<pk>\d+)/feed/(?P<feed_id>\d+)/$', views.followUnfollowFeed),
+
 ]

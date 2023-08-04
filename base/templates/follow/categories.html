@@ -1,0 +1,20 @@
+<ul class="dropdown-menu dropdown-menu-light text-small shadow follow-list-dd">
+  {% if folders.count > 0 %}
+    {% for folder in folders %}
+      <span class="w-100 url" data-url="api/folder/{{folder.pk}}/feed/{{feed.pk}}" data-user="{{request.user.pk}}">
+        <li class="p-2 px-3" onclick="followClick(event);">
+          <span class="dropdown--folder-name">
+            {{ folder.name }}
+          </span>
+          <button class="btn btn-outline-success px-3 fs-12 py-1 float-end"></i> Add</button>
+        </li>
+      </span>
+    {% endfor %}
+  {% else %}
+    <li class="text-muted fs-12 p-3">Organize the feeds you want to follow into folders</li>
+  {% endif %}
+  <li>
+    <hr class="dropdown-divider">
+  </li>
+  <li><a class="dropdown-item color-green" href="#"><i class="fa-solid fa-plus me-2 color-green"></i> New Folder</a></li>
+</ul>

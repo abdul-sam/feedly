@@ -3,7 +3,7 @@ from .models import Article, Board, Category, Favorite, Feed, Reading
 
 
 class ArticleAdmin(admin.ModelAdmin):
-  list_display = ('title', 'description', 'image_url', 'link', 'feed', 'updated_at', 'created_at')
+  list_display = ('title', 'description', 'image_url', 'link', 'feed_title', 'updated_at', 'created_at')
 
 
 class BoardAdmin(admin.ModelAdmin):
@@ -17,11 +17,11 @@ class CategoryAdmin(admin.ModelAdmin):
 class FeedAdmin(admin.ModelAdmin):
   fields = ["feed_url"]
 
-  list_display = ('title', 'description', 'image_url', 'feed_url', 'article_count', 'import_feed_link', 'updated_at', 'created_at')
+  list_display = ('title', 'description', 'image_url', 'feed_url', 'article_count', 'updated_at', 'created_at')
   
 
 class FavoriteAdmin(admin.ModelAdmin):
-  list_display = ('favorite', 'feed', 'user', 'updated_at', 'created_at')
+  list_display = ('favorite', 'favorite_type', 'feed', 'user', 'updated_at', 'created_at')
 
 
 class ReadingAdmin(admin.ModelAdmin):

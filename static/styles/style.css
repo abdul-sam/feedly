@@ -43,6 +43,10 @@ body {
   font-size: 22px !important;
 }
 
+.fs-44{
+  font-size: 44px !important;
+}
+
 .bg-gray{
   background-color: lightgray !important;
 }
@@ -85,6 +89,7 @@ hr{
   text-align: center;
 }
 
+#feed--list,
 #menu{
   display: flex;
   flex-direction: column;
@@ -98,6 +103,7 @@ hr{
   margin-left: 20%;
 }
 
+#feed--list a,
 #top-menu a,
 #menu a{
   font-size: .8125rem;
@@ -140,7 +146,7 @@ hr{
 }
 
 .color-green{
-  color: green;
+  color: green !important;
 }
 
 .toast-message{
@@ -200,7 +206,7 @@ hr{
 	overflow-y: auto;
 }
 
-#right-side-modal .modal.right .modal-body {
+#right-side-modal .modal.right .article-modal-body {
 	padding: 50px 200px;
 }
 
@@ -262,4 +268,29 @@ hr{
 
 .feed--image{
   height: 90px !important;
+}
+
+#feed--cards .dropdown-toggle::after{
+  display: none;
+}
+
+#feed--cards ul{
+  max-width: 300px;
+  width: 250px;
+}
+
+.folder--modal-content{
+  width: 768px !important;
+}
+
+#folder--body{
+  padding: 100px 50px;
+}
+
+#folder--body label{
+  margin-bottom: 10px;
+}
+
+#folder--body p{
+  margin-bottom: 25px;
 }

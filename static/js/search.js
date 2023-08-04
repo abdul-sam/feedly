@@ -22,8 +22,14 @@ const appendSearchFeeds = (feeds) => {
       content +=  `<div class="col-lg-12 mb-4">
                     <div class="card">
                       <div class="feed--follow-btn mt-3">
-                        <span class="p-1 px-2 cursor-pointer" data-id="{{feed.id}}">
-                          <button class="btn btn-outline-success px-3 fs-12 me-4 py-1">Follow</button>
+                        <span class="p-1 px-2 cursor-pointer" data-id="${feed.id}">
+                          <button 
+                            class="btn btn-outline-success px-3 fs-12 me-4 py-1 dropdown-toggle"
+                            id="dropdown${feed.id}" data-bs-toggle="dropdown" aria-expanded="false"
+                            onclick="preventClose(event);"
+                          >
+                            Follow
+                          </button>
                         </span>
                       </div>
                       <div class="card-body">
